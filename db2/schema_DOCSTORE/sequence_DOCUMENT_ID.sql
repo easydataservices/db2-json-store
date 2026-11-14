@@ -1,0 +1,1 @@
+CREATE SEQUENCE document_id AS BIGINT;
