@@ -1,7 +1,0 @@
-CREATE OR REPLACE MODULE index;
-
-ALTER MODULE index
-PUBLISH VARIABLE g_build_delay_seconds SMALLINT CONSTANT 60;
-
-ALTER MODULE index
-PUBLISH PROCEDURE build_index(p_index_id SMALLINT);

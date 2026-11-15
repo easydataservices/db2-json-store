@@ -4,8 +4,7 @@ CREATE TABLE stocon
   singleton_id SMALLINT NOT NULL,
   total_partitions SMALLINT NOT NULL,
   inactive_partition_num SMALLINT NOT NULL DEFAULT 0,
-  is_invalid_json_blocked BOOLEAN NOT NULL DEFAULT TRUE,
-  add_session_role VARCHAR(30)
+  is_invalid_json_blocked BOOLEAN NOT NULL DEFAULT TRUE
 )
   ORGANIZE BY ROW
   IN dat_docstore INDEX in idx_docstore

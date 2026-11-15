@@ -1,4 +1,5 @@
-CREATE OR REPLACE PROCEDURE log_action
+ALTER MODULE private
+ADD PROCEDURE log_action
 (
   p_action VARCHAR(20), p_document_id BIGINT, p_document_type_id SMALLINT, p_tag_id SMALLINT, p_index_id SMALLINT
 )

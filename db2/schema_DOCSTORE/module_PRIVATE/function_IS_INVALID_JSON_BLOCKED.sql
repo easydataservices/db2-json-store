@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION is_invalid_json_blocked() RETURNS BOOLEAN
+ALTER MODULE private
+ADD FUNCTION is_invalid_json_blocked() RETURNS BOOLEAN
 BEGIN
   DECLARE v_result BOOLEAN;
   

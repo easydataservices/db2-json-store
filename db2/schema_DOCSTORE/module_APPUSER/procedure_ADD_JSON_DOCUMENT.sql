@@ -1,9 +1,10 @@
-CREATE OR REPLACE PROCEDURE add_json_document
+ALTER MODULE appuser
+ADD PROCEDURE add_json_document
 (
   INOUT p_document_id BIGINT,
   p_document_type_id SMALLINT,
   p_external_ref VARCHAR(30),
-  p_tags_json_array VARCHAR(200),
+  p_tags_json_array VARCHAR(2000),
   p_json_document CLOB(2M)
 )
 BEGIN
@@ -22,16 +23,9 @@ BEGIN
     SIGNAL SQLSTATE 'DS401' SET MESSAGE_TEXT = 'Not authorised';
   END IF;
 
-  -- Validate tags JSON array
-  IF p_tags_json_array IS NOT NULL THEN
-    IF NOT is_json_array(p_tags_json_array) THEN
-      SIGNAL SQLSTATE 'DS202' SET MESSAGE_TEXT = 'Invalid JSON array';
-    END IF;
-  END IF;
-
   -- Validate JSON document
-  SET v_is_valid_json = is_json_document(p_json_document);
-  IF NOT v_is_valid_json AND is_invalid_json_blocked() THEN
+  SET v_is_valid_json = private.is_json_document(p_json_document);
+  IF NOT v_is_valid_json AND private.is_invalid_json_blocked() THEN
     SIGNAL SQLSTATE 'DS201' SET MESSAGE_TEXT = 'Invalid JSON document';
   END IF;
 
@@ -52,7 +46,7 @@ BEGIN
   IF p_document_id IS NULL THEN
     SET p_document_id = NEXT VALUE FOR document_id;
   END IF;
-  SET v_partition_num = get_partition_num(p_document_id);
+  SET v_partition_num = private.get_partition_num(p_document_id);
 
   -- Perform updates
   BEGIN ATOMIC
@@ -80,30 +74,8 @@ BEGIN
     INSERT INTO document_json(document_id, partition_num, json_document)
     VALUES
       (p_document_id, v_partition_num, p_json_document);
-
-    -- Insert JSON tags
-    IF p_tags_json_array IS NOT NULL THEN
-      FOR r AS
-        SELECT
-          t.tag_id, p.value
-        FROM
-          TABLE(get_json_tags(p_tags_json_array)) AS p
-            LEFT OUTER JOIN
-          document_type_tag AS t
-            ON
-              t.tag = p.tag AND
-              t.document_type_id = p_document_type_id
-      DO
-        IF r.tag_id IS NULL THEN
-          SIGNAL SQLSTATE 'DS302' SET MESSAGE_TEXT = 'Invalid tag';
-        END IF; 
-        INSERT INTO document_tag(document_id, document_type_id, tag_id, value, inserted_utc_ts)
-        VALUES
-          (p_document_id, p_document_type_id, r.tag_id, r.value, CURRENT_TIMESTAMP - CURRENT_TIMEZONE);
-      END FOR;
-    END IF;
     
     -- Add audit entry.
-    CALL log_action('ADD_DOCUMENT', p_document_id, p_document_type_id, NULL, NULL);
+    CALL private.log_action('ADD_DOCUMENT', p_document_id, p_document_type_id, NULL, NULL);
   END;
 END@
