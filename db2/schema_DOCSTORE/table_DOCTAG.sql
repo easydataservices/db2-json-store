@@ -3,7 +3,8 @@ CREATE TABLE doctag
 (
   document_id BIGINT NOT NULL,
   document_type_id SMALLINT NOT NULL,
-  tag VARCHAR(20) NOT NULL,
+  tag_id SMALLINT NOT NULL,
+  value VARCHAR(20),
   inserted_utc_ts TIMESTAMP(0) NOT NULL,
   deleted_utc_ts TIMESTAMP(0)
 )
@@ -15,9 +16,12 @@ CREATE TABLE doctag
 CREATE ALIAS document_tag FOR TABLE doctag;
 
 ALTER TABLE doctag
-ADD CONSTRAINT doctag_pk PRIMARY KEY (document_id, tag);
+ADD CONSTRAINT doctag_pk PRIMARY KEY (document_id, tag_id);
 
 ALTER TABLE doctag
-ADD CONSTRAINT doctag_dotyta_fk1 FOREIGN KEY (document_type_id, tag) REFERENCES dotyta;
+ADD CONSTRAINT doctag_dotyta_fk1 FOREIGN KEY (document_type_id, tag_id) REFERENCES dotyta;
 
-CREATE UNIQUE INDEX doctag_ix1 ON doctag(document_type_id, tag, document_id);
+ALTER TABLE doctag
+ADD CONSTRAINT doctag_dotytv_fk1 FOREIGN KEY (document_type_id, tag_id, value) REFERENCES dotytv;
+
+CREATE UNIQUE INDEX doctag_ix1 ON doctag(document_type_id, tag_id, document_id);

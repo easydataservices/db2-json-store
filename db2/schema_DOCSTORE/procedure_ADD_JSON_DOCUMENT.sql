@@ -3,7 +3,6 @@ CREATE OR REPLACE PROCEDURE add_json_document
   INOUT p_document_id BIGINT,
   p_document_type_id SMALLINT,
   p_external_ref VARCHAR(30),
-  p_associated_entity_ref VARCHAR(30),
   p_tags_json_array VARCHAR(200),
   p_json_document CLOB(2M)
 )
@@ -65,18 +64,17 @@ BEGIN
     -- Insert the index row
     INSERT INTO document_index
     (
-      document_id, partition_num, document_type_id, inserted_utc_ts, is_valid_json, external_ref, associated_entity_ref
+      document_id, partition_num, document_type_id, inserted_utc_ts, is_valid_json, external_ref
     )
     VALUES
-    (
-      p_document_id,
-      v_partition_num,
-      p_document_type_id,
-      CURRENT_TIMESTAMP - CURRENT_TIMEZONE,
-      v_is_valid_json,
-      p_external_ref,
-      p_associated_entity_ref
-    );
+      (
+        p_document_id,
+        v_partition_num,
+        p_document_type_id,
+        CURRENT_TIMESTAMP - CURRENT_TIMEZONE,
+        v_is_valid_json,
+        p_external_ref
+      );
 
     -- Insert JSON row
     INSERT INTO document_json(document_id, partition_num, json_document)
@@ -87,7 +85,7 @@ BEGIN
     IF p_tags_json_array IS NOT NULL THEN
       FOR r AS
         SELECT
-          t.tag
+          t.tag_id, p.value
         FROM
           TABLE(get_json_tags(p_tags_json_array)) AS p
             LEFT OUTER JOIN
@@ -96,13 +94,16 @@ BEGIN
               t.tag = p.tag AND
               t.document_type_id = p_document_type_id
       DO
-        IF r.tag IS NULL THEN
+        IF r.tag_id IS NULL THEN
           SIGNAL SQLSTATE 'DS302' SET MESSAGE_TEXT = 'Invalid tag';
         END IF; 
-        INSERT INTO document_tag(document_id, document_type_id, tag, inserted_utc_ts)
+        INSERT INTO document_tag(document_id, document_type_id, tag_id, value, inserted_utc_ts)
         VALUES
-          (p_document_id, p_document_type_id, r.tag, CURRENT_TIMESTAMP - CURRENT_TIMEZONE);
+          (p_document_id, p_document_type_id, r.tag_id, r.value, CURRENT_TIMESTAMP - CURRENT_TIMEZONE);
       END FOR;
     END IF;
+    
+    -- Add audit entry.
+    CALL log_action('ADD_DOCUMENT', p_document_id, p_document_type_id, NULL, NULL);
   END;
 END@
