@@ -23,7 +23,7 @@ ADD CONSTRAINT audlog_pk PRIMARY KEY (log_id);
 ALTER TABLE audlog
 ADD CONSTRAINT audlog_c1 CHECK
 (
-  action IN ('ADD_DOCUMENT')
+  action IN ('ADD_DOCUMENT', 'REMOVE_DOCUMENT')
 );
 
 CREATE INDEX audlog_ix1 ON audlog(log_utc_ts);

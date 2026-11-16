@@ -26,39 +26,3 @@ CREATE ALIAS document_json FOR TABLE dojson;
 CREATE UNIQUE INDEX dojson_pk ON dojson(document_id, partition_num) PARTITIONED;
 
 ALTER TABLE dojson ADD CONSTRAINT dojson_pk PRIMARY KEY (document_id, partition_num);
-
-SELECT * FROM document_index;
-
-DOCUMENT_ID          PARTITION_NUM DOCUMENT_TYPE_ID INSERTED_UTC_TS     DELETED_UTC_TS      IS_VALID_JSON EXTERNAL_REF                   EXTERNAL_REF_TYPE_ID
--------------------- ------------- ---------------- ------------------- ------------------- ------------- ------------------------------ --------------------
-                   1             2                1 2026-11-15-19.52.11 -                               1 EMPTYDOC                                          1
-                   2             3                1 2026-11-15-19.53.03 -                               1 2026v1_ACME                                       1
-
-  2 record(s) selected.
-
-SELECT * FROM external_reference;
-
-EXTERNAL_REF                   EXTERNAL_REF_TYPE_ID
------------------------------- --------------------
-EMPTYDOC                                          1
-2026v1_ACME                                       1
-
-  2 record(s) selected.
-
-SELECT document_id, partition_num, CAST(json_document AS VARCHAR(80)) AS json_document FROM document_json;
-
-DOCUMENT_ID          PARTITION_NUM JSON_DOCUMENT                                                                   
--------------------- ------------- --------------------------------------------------------------------------------
-                   1             2 {}                                                                              
-                   2             3 {"name" : "ACME Corp", "sector" : "Conglomerate", "account_num" : 1234}         
-
-  2 record(s) selected.
-
-SELECT * FROM audit_log;
-
-LOG_ID               LOG_UTC_TS          USER_NAME                                                                                                                        ACTION               DOCUMENT_ID          DOCUMENT_TYPE_ID TAG_ID INDEX_ID
--------------------- ------------------- -------------------------------------------------------------------------------------------------------------------------------- -------------------- -------------------- ---------------- ------ --------
-                   1 2026-11-15-19.52.11 JEREMY                                                                                                                           ADD_DOCUMENT                            1                1      -        -
-                   2 2026-11-15-19.53.03 JEREMY                                                                                                                           ADD_DOCUMENT                            2                1      -        -
-
-  2 record(s) selected.

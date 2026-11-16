@@ -4,9 +4,13 @@ CREATE OR REPLACE MODULE private;
 ALTER MODULE private
 PUBLISH FUNCTION get_partition_num(p_document_id BIGINT) RETURNS SMALLINT;
 
--- Return flag indicating whether or not invalid JSON documents should be rejected
+-- Return flag indicating whether invalid JSON documents should be rejected
 ALTER MODULE private
 PUBLISH FUNCTION is_invalid_json_blocked() RETURNS BOOLEAN;
+
+-- Return flag indicating whether external reference is new (or already exists)
+ALTER MODULE private
+PUBLISH FUNCTION is_new_external_ref(p_document_type_id SMALLINT, p_external_ref VARCHAR(30)) RETURNS BOOLEAN;
 
 -- Return flag indicate whether supplied text is a JSON document
 ALTER MODULE private
