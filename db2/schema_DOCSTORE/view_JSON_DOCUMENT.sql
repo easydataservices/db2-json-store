@@ -1,21 +1,17 @@
 CREATE OR REPLACE VIEW json_document
 (
   document_id,
-  partition_num,
   inserted_utc_ts,
   document_type_id,
   external_ref,
-  associated_entity_ref,
   is_valid_json,
   json_document
 ) AS
 SELECT
   i.document_id,
-  i.partition_num,
   i.inserted_utc_ts,
   i.document_type_id,
   i.external_ref,
-  i.associated_entity_ref,
   i.is_valid_json,
   j.json_document
 FROM

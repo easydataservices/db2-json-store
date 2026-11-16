@@ -1,4 +1,5 @@
-CREATE OR REPLACE FUNCTION get_partition_num(p_document_id BIGINT) RETURNS SMALLINT
+ALTER MODULE private
+ADD FUNCTION get_partition_num(p_document_id BIGINT) RETURNS SMALLINT
 BEGIN
   DECLARE v_total_partitions SMALLINT;
   DECLARE v_inactive_partition_num SMALLINT;

@@ -4,8 +4,9 @@ CREATE TABLE doctyp
   document_type_id SMALLINT NOT NULL,
   document_type_name VARCHAR(30) NOT NULL,
   is_duplicate_external_ref_blocked BOOLEAN NOT NULL DEFAULT TRUE,
+  view_document_role VARCHAR(30) NOT NULL,
   add_document_role VARCHAR(30) NOT NULL,
-  delete_document_role VARCHAR(30)
+  remove_document_role VARCHAR(30)
 )
   ORGANIZE BY ROW
   IN dat_docstore INDEX in idx_docstore

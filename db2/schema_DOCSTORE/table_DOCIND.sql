@@ -9,8 +9,7 @@ CREATE TABLE docind
   is_valid_json BOOLEAN NOT NULL,
   external_ref VARCHAR(30),
   external_ref_type_id SMALLINT NOT NULL
-    GENERATED ALWAYS AS (CASE WHEN external_ref IS NULL THEN NULL ELSE document_type_id END),
-  associated_entity_ref VARCHAR(30)
+    GENERATED ALWAYS AS (CASE WHEN external_ref IS NULL THEN NULL ELSE document_type_id END)
 )
   ORGANIZE BY ROW
   IN dat_docstore INDEX in idx_docstore
@@ -34,3 +33,5 @@ ALTER TABLE docind
 ADD CONSTRAINT docind_c1 CHECK (document_id > 0);
 
 CREATE INDEX docind_ix1 ON docind(external_ref_type_id, external_ref) EXCLUDE NULL KEYS;
+
+CREATE INDEX docind_ix2 ON docind(document_type_id, document_id);
