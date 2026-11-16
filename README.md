@@ -141,8 +141,6 @@ DOCUMENT_ID          INSERTED_UTC_TS     DOCUMENT_TYPE_NAME             EXTERNAL
 
 -- Attempt to add an updated document for organisation name change, using duplicate reference 
 CALL docuser.add_json_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}');
-
-CALL docuser.add_json_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}');
 SQL0438N  Application raised error or warning with diagnostic text: 
 "Disallowed duplicate EXTERNAL_REF".  SQLSTATE=DS301
 ```
