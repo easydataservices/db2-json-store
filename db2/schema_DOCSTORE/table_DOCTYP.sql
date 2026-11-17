@@ -1,4 +1,5 @@
--- DOCUMENT_TYPE table
+-- Table DOCUMENT_TYPE
+
 CREATE TABLE doctyp
 (
   document_type_id SMALLINT NOT NULL,

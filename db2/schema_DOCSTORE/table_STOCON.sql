@@ -1,4 +1,5 @@
--- STORE_CONTROL table
+-- Table STORE_CONTROL
+
 CREATE TABLE stocon
 (
   singleton_id SMALLINT NOT NULL,

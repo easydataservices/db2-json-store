@@ -1,4 +1,5 @@
--- EXTERNAL_REFERENCE table
+-- Table EXTERNAL_REFERENCE
+
 CREATE TABLE extref
 (
   external_ref VARCHAR(30) NOT NULL,

@@ -1,4 +1,5 @@
--- DOCUMENT_INDEX table
+-- Table DOCUMENT_INDEX
+
 CREATE TABLE docind
 (
   document_id BIGINT NOT NULL,

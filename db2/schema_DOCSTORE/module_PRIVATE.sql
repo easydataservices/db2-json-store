@@ -22,3 +22,7 @@ PUBLISH PROCEDURE log_action
 (
   p_action VARCHAR(20), p_document_id BIGINT, p_document_type_id SMALLINT, p_tag_id SMALLINT, p_index_id SMALLINT
 );
+
+-- Add index entry for specified document and index
+ALTER MODULE private
+PUBLISH PROCEDURE add_index_entry(p_document_id BIGINT, p_index_id SMALLINT);

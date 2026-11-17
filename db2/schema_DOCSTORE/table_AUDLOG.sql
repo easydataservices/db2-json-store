@@ -1,4 +1,5 @@
--- AUDIT_LOG table
+-- Table AUDIT_LOG
+
 CREATE TABLE audlog
 (
   log_id BIGINT NOT NULL,
