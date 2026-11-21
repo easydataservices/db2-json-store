@@ -27,7 +27,7 @@ BEGIN
   BEGIN ATOMIC
     INSERT INTO json_index(index_id, index_name, document_type_id, json_path, value_data_type, inserted_utc_ts)
     VALUES
-      (p_index_id, p_index_name, p_document_type_id, p_json_path, p_value_data_type, v_utc_ts);
+      (p_index_id, p_index_name, p_document_type_id, private.tidy_json_path(p_json_path), p_value_data_type, v_utc_ts);
 
     -- Add audit entry.
     CALL private.log_action('ADD_INDEX', NULL, p_document_type_id, NULL, p_index_id);

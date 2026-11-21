@@ -27,3 +27,12 @@ PUBLISH FUNCTION get_json_document(p_document_id BIGINT)
     is_valid_json BOOLEAN,
     json_document CLOB(2M)
   );
+
+-- Retrieve JSON BIGINT values for the specified document type and JSON path
+ALTER MODULE docuser
+PUBLISH FUNCTION get_json_bigint_values(p_document_type_id SMALLINT, p_json_path VARCHAR(1000))
+  RETURNS TABLE
+  (
+    document_id BIGINT,
+    value BIGINT
+  );

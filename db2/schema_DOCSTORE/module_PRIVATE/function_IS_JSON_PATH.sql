@@ -7,13 +7,12 @@ BEGIN
   DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
     RETURN FALSE;
 
-  -- Hander for member
   -- Check input text is a JSON path expression
-  IF p_json_path IS NULL OR (p_json_path NOT LIKE 'strict $%' AND p_json_path NOT LIKE 'lax $%') THEN
+  IF p_json_path IS NULL OR NOT REGEXP_LIKE(tidy_json_path(p_json_path), '^((\$|strict \$))') THEN
     RETURN FALSE;
   END IF;
   IF p_json_path LIKE 'strict $%' THEN
-    SET p_json_path = 'lax $' || SUBSTR(p_json_path, 9);
+    SET p_json_path = '$' || SUBSTR(p_json_path, 9);
   END IF;
   SET v_dummy = JSON_VALUE('{}', p_json_path RETURNING CHAR(1) ERROR ON ERROR);
 

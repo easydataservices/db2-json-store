@@ -20,6 +20,10 @@ PUBLISH FUNCTION is_new_external_ref(p_document_type_id SMALLINT, p_external_ref
 ALTER MODULE private
 PUBLISH FUNCTION is_json_document(p_json CLOB(2M)) RETURNS BOOLEAN;
 
+-- Standardise a JSON path expression
+ALTER MODULE private
+PUBLISH FUNCTION tidy_json_path(p_json_path VARCHAR(1000)) RETURNS VARCHAR(1000);
+
 -- Return flag indicate whether supplied JSON path is a valid path expression
 ALTER MODULE private
 PUBLISH FUNCTION is_json_path(p_json_path VARCHAR(1000)) RETURNS BOOLEAN;
