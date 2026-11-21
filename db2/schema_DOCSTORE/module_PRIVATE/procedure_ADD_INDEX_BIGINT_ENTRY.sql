@@ -1,7 +1,7 @@
 ALTER MODULE private
 ADD PROCEDURE add_index_bigint_entry
 (
-  p_document_id BIGINT, p_index_id SMALLINT, p_partition_num SMALLINT, p_json_path VARCHAR(1000)
+  p_document_id BIGINT, p_index_id SMALLINT, p_json_path VARCHAR(1000), p_json_document CLOB(2M)
 )
 BEGIN
   DECLARE v_value BIGINT;
@@ -12,16 +12,7 @@ BEGIN
   END IF;
 
   -- Add entry from JSON value (if found)
-  SET v_value =
-    (
-      SELECT
-        JSON_VALUE(json_document, p_json_path RETURNING BIGINT)
-      FROM
-        document_json
-      WHERE
-        partition_num = p_partition_num AND document_id = p_document_id
-      WITH CS
-    );
+  SET v_value = JSON_VALUE(p_json_document, p_json_path RETURNING BIGINT);
   IF v_value IS NOT NULL THEN
     INSERT INTO json_bigint_index_value(index_id, document_id, value)
     VALUES

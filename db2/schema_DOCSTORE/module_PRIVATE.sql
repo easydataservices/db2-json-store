@@ -1,5 +1,9 @@
 CREATE OR REPLACE MODULE private;
 
+-- Build delay after index creation, used to avoid locking
+ALTER MODULE index
+PUBLISH VARIABLE g_new_index_delay_seconds SMALLINT CONSTANT 5;
+
 -- Calculate partition number for new document
 ALTER MODULE private
 PUBLISH FUNCTION get_partition_num(p_document_id BIGINT) RETURNS SMALLINT;
@@ -16,6 +20,10 @@ PUBLISH FUNCTION is_new_external_ref(p_document_type_id SMALLINT, p_external_ref
 ALTER MODULE private
 PUBLISH FUNCTION is_json_document(p_json CLOB(2M)) RETURNS BOOLEAN;
 
+-- Return flag indicate whether supplied JSON path is a valid path expression
+ALTER MODULE private
+PUBLISH FUNCTION is_json_path(p_json_path VARCHAR(1000)) RETURNS BOOLEAN;
+
 -- Log an auditable action
 ALTER MODULE private
 PUBLISH PROCEDURE log_action
@@ -25,4 +33,4 @@ PUBLISH PROCEDURE log_action
 
 -- Add index entry for specified document and index
 ALTER MODULE private
-PUBLISH PROCEDURE add_index_entry(p_document_id BIGINT, p_index_id SMALLINT);
+PUBLISH PROCEDURE add_index_entry(p_document_id BIGINT, p_index_id SMALLINT, p_json_document CLOB(2M));

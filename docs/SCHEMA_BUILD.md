@@ -1,0 +1,69 @@
+# db2-json-store schema build instructions
+
+This page describes how to create all schema objects from the Db2 command line.
+
+See also:
+  * [README.md](../README.md)
+
+## Prerequisites
+
+Connect to database as an appropriate administrative user.
+
+Change to the ``db2`` subdirectory, then:
+```
+db2 -tvf ./schema_DOCSTORE/set_env.sql
+db2 -tvf ./schema_DOCSTORE/tablespaces.sql
+```
+
+## Core components
+
+These commands create the core schema, sufficient for saving and retrieval JSON documents.
+```
+db2 -tf ./schema_DOCSTORE/sequence_DOCUMENT_ID.sql
+db2 -tf ./schema_DOCSTORE/sequence_LOG_ID.sql
+db2 -tf ./schema_DOCSTORE/table_AUDLOG.sql
+db2 -tf ./schema_DOCSTORE/table_STOCON.sql
+db2 -tf ./schema_DOCSTORE/table_EXTREF.sql
+db2 -tf ./schema_DOCSTORE/table_DOCTYP.sql
+db2 -tf ./schema_DOCSTORE/table_DOCIND.sql
+db2 -tf ./schema_DOCSTORE/table_DOJSON.sql
+db2 -tf ./schema_DOCSTORE/table_JINDEX.sql
+db2 -tf ./schema_DOCSTORE/view_JSON_DOCUMENT.sql
+db2 -tf ./schema_DOCSTORE/module_PRIVATE.sql
+db2 -tf ./schema_DOCSTORE/module_DOCUSER.sql
+db2 -tf ./schema_DOCSTORE/module_ADMIN.sql
+db2 -td@ -f./schema_DOCSTORE/module_PRIVATE/function_GET_PARTITION_NUM.sql
+db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_INVALID_JSON_BLOCKED.sql
+db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_JSON_DOCUMENT.sql
+db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_NEW_EXTERNAL_REF.sql
+db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_LOG_ACTION.sql
+db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/function_IS_ADDER.sql
+db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/function_IS_REMOVER.sql
+db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/function_IS_VIEWER.sql
+db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/procedure_ADD_JSON_DOCUMENT.sql
+db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/procedure_REMOVE_JSON_DOCUMENT.sql
+db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/function_GET_JSON_DOCUMENT.sql
+```
+
+## Indexing components
+
+Execute these commands to add JSON indexing support.
+```
+db2 -tf ./schema_DOCSTORE/table_JBIGIV.sql
+db2 -tf ./schema_DOCSTORE/table_JDBLIV.sql
+db2 -tf ./schema_DOCSTORE/table_JSTRIV.sql
+db2 -tf ./schema_DOCSTORE/table_JINDCO.sql
+db2 -tf ./schema_DOCSTORE/table_JINDHI.sql
+db2 -tf ./schema_DOCSTORE/module_INDEX.sql
+db2 -td@ -f ./schema_DOCSTORE/module_INDEX/procedure_UPDATE_METADATA.sql
+db2 -td@ -f ./schema_DOCSTORE/module_INDEX/procedure_BUILD_INDEX.sql
+```
+
+## Admin components
+
+Execute these commands to create administration routines.
+```
+db2 -td@ -f ./schema_DOCSTORE/module_ADMIN/procedure_ADD_JSON_INDEX.sql
+db2 -td@ -f ./schema_DOCSTORE/module_ADMIN/procedure_REMOVE_JSON_INDEX.sql
+```
+
