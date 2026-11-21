@@ -36,3 +36,21 @@ PUBLISH FUNCTION get_json_bigint_values(p_document_type_id SMALLINT, p_json_path
     document_id BIGINT,
     value BIGINT
   );
+
+-- Retrieve JSON DOUBLE values for the specified document type and JSON path
+ALTER MODULE docuser
+PUBLISH FUNCTION get_json_double_values(p_document_type_id SMALLINT, p_json_path VARCHAR(1000))
+  RETURNS TABLE
+  (
+    document_id BIGINT,
+    value DOUBLE
+  );
+
+-- Retrieve JSON VARCHAR values for the specified document type and JSON path
+ALTER MODULE docuser
+PUBLISH FUNCTION get_json_string_values(p_document_type_id SMALLINT, p_json_path VARCHAR(1000))
+  RETURNS TABLE
+  (
+    document_id BIGINT,
+    value VARCHAR(1000)
+  );
