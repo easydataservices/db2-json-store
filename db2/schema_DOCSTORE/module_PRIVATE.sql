@@ -1,9 +1,5 @@
 CREATE OR REPLACE MODULE private;
 
--- Build delay after index creation, used to avoid locking
-ALTER MODULE index
-PUBLISH VARIABLE g_new_index_delay_seconds SMALLINT CONSTANT 5;
-
 -- Calculate partition number for new document
 ALTER MODULE private
 PUBLISH FUNCTION get_partition_num(p_document_id BIGINT) RETURNS SMALLINT;
@@ -32,7 +28,7 @@ PUBLISH FUNCTION is_json_path(p_json_path VARCHAR(1000)) RETURNS BOOLEAN;
 ALTER MODULE private
 PUBLISH PROCEDURE log_action
 (
-  p_action VARCHAR(20), p_document_id BIGINT, p_document_type_id SMALLINT, p_tag_id SMALLINT, p_index_id SMALLINT
+  p_action VARCHAR(30), p_document_id BIGINT, p_document_type_id SMALLINT, p_tag_id SMALLINT, p_index_id SMALLINT
 );
 
 -- Add index entry for specified document and index

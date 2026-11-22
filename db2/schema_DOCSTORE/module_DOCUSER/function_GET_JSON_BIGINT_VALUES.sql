@@ -17,40 +17,19 @@ BEGIN
     SIGNAL SQLSTATE 'DS202' SET MESSAGE_TEXT = 'Invalid JSON path';
   END IF;
 
-  -- Retrieve index details
-  SET v_index_id =
-    (
-      SELECT
-        index_id
-      FROM
-        json_index
-      WHERE
-        document_type_id = p_document_type_id AND
-        json_path = private.tidy_json_path(p_json_path) AND
-        value_data_type = 'BIGINT' AND
-        NOT is_build_pending AND
-        NOT is_delete_pending
-      WITH CS
-    );
+  -- Look for an index matching the criteria
+  SET v_index_id = usable_index_id(p_document_type_id, p_json_path, 'BIGINT');
 
-  -- If no suitable index exists then pipe results from documents; otherwise from the index 
+  -- If no index exists then pipe results from documents; otherwise from the index
   IF v_index_id IS NULL THEN
     FOR r AS
-      SELECT
-        document_id, JSON_VALUE(json_document, p_json_path RETURNING BIGINT) AS value
-      FROM
-        json_document
-      WHERE
-        document_type_id = p_document_type_id
-      WITH CS
+      SELECT document_id, value FROM TABLE(get_unindexed_bigint_values(p_document_type_id, p_json_path))
     DO
-      IF value IS NOT NULL THEN
-        PIPE(r.document_id, r.value);
-      END IF;
+      PIPE(r.document_id, r.value);
     END FOR;
   ELSE
     FOR r AS
-      SELECT document_id, value FROM json_bigint_index_value WHERE index_id = v_index_id WITH CS
+      SELECT document_id, value FROM TABLE(get_indexed_bigint_values(v_index_id))
     DO
       PIPE(r.document_id, r.value);
     END FOR;

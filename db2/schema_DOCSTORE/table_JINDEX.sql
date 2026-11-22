@@ -31,3 +31,6 @@ ADD CONSTRAINT jindex_doctyp_fk1 FOREIGN KEY (document_type_id) REFERENCES docty
 
 ALTER TABLE jindex
 ADD CONSTRAINT jindex_c1 CHECK (value_data_type IN ('VARCHAR', 'BIGINT', 'DOUBLE'));
+
+ALTER TABLE jindex
+ADD CONSTRAINT jindex_c2 CHECK (NOT is_build_pending OR NOT is_delete_pending);

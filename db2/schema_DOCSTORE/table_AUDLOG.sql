@@ -5,7 +5,7 @@ CREATE TABLE audlog
   log_id BIGINT NOT NULL,
   log_utc_ts TIMESTAMP(0) NOT NULL,
   user_name VARCHAR(128) NOT NULL,
-  action VARCHAR(20) NOT NULL,
+  action VARCHAR(30) NOT NULL,
   document_id BIGINT,
   document_type_id SMALLINT,
   tag_id SMALLINT,
@@ -24,7 +24,18 @@ ADD CONSTRAINT audlog_pk PRIMARY KEY (log_id);
 ALTER TABLE audlog
 ADD CONSTRAINT audlog_c1 CHECK
 (
-  action IN ('ADD_DOCUMENT', 'ADD_INDEX', 'REMOVE_DOCUMENT', 'REMOVE_INDEX')
+  action IN
+    (
+      'ADD_DOCUMENT',
+      'ADD_DOCUMENT_TYPE',
+      'ADD_INDEX',
+      'ALLOW_DUPLICATE_REF',
+      'ALLOW_INVALID_JSON',
+      'BLOCK_DUPLICATE_REF',
+      'BLOCK_INVALID_JSON',
+      'REMOVE_DOCUMENT',
+      'REMOVE_INDEX'
+    )
 );
 
 CREATE INDEX audlog_ix1 ON audlog(log_utc_ts);

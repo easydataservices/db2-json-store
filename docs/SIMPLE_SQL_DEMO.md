@@ -1,6 +1,6 @@
-# db2-json-store simple SQL demo
+# db2-json-store simple demo with SQL API
 
-This page shows some simple usage examples using only SQL.
+This page shows some simple usage examples using the SQL API.
 
 See also:
   * [README.md](../README.md)
@@ -11,7 +11,7 @@ In these examples, the database security administrator (SECADM) user creates and
 
 ## Create security roles
 
-As the SECADM user:
+As the SECADM user, create security roles for an Organisation document type:
 ```
 CREATE ROLE add_organisation_doc;
 DB20000I  The SQL command completed successfully.
@@ -34,13 +34,11 @@ DB20000I  The SQL command completed successfully.
 
 ## Add organisation document type
 
-As admin user:
+As the admin user, add a new Organisation document type:
 ```
--- Insert a document type, with role for adding documents
-INSERT INTO document_type(document_type_id, document_type_name, view_document_role, add_document_role, remove_document_role)
-VALUES
-  (1, 'Organisation', 'VIEW_ORGANISATION_DOC', 'ADD_ORGANISATION_DOC', 'REMOVE_ORGANISATION_DOC');
-DB20000I  The SQL command completed successfully.
+CALL admin.add_document_type(1, 'Organisation', 'VIEW_ORGANISATION_DOC', 'ADD_ORGANISATION_DOC', 'REMOVE_ORGANISATION_DOC');
+
+  Return Status = 0
 ```
 
 ## Add and retrieve JSON documents
@@ -81,7 +79,7 @@ FROM
 
 DOCUMENT_ID          INSERTED_UTC_TS     DOCUMENT_TYPE_NAME             EXTERNAL_REF                   JSON_DOCUMENT                                                                        
 -------------------- ------------------- ------------------------------ ------------------------------ -------------------------------------------------------------------------------------
-                   1 2026-11-16-18.38.58 Organisation                   2026v1_ACME                    {"name" : "ACME Corp", "sector" : "Conglomerate", "account_num" : 1234}         
+                   1 2026-11-21-21.36.44 Organisation                   2026v1_ACME                    {"name" : "ACME Corp", "sector" : "Conglomerate", "account_num" : 1234}              
 
   1 record(s) selected.
 
@@ -130,8 +128,9 @@ SQL0438N  Application raised error or warning with diagnostic text:
 As admin user:
 ```
 -- Allow duplicate external references for the document type
-UPDATE document_type SET is_duplicate_external_ref_blocked = FALSE WHERE document_type_id = 1;
-DB20000I  The SQL command completed successfully.
+CALL admin.set_duplicate_external_ref_blocked(1, FALSE);
+
+  Return Status = 0
 ```
 > Note: Reversing this change will not only block further duplicates; any existing duplicates will remain.
 
@@ -156,8 +155,10 @@ JSON document".  SQLSTATE=DS201
 As admin user:
 ```
 -- Change the document store settings to permit incorrect JSON
-UPDATE store_control SET is_invalid_json_blocked = FALSE;
+CALL admin.set_invalid_json_blocked(FALSE);
 DB20000I  The SQL command completed successfully.
+
+  Return Status = 0
 ```
 
 As user JEREMY:
@@ -176,14 +177,37 @@ CALL docuser.add_json_document(NULL, 1, 'myBadJson', null, '{"name" : "Bad Boyz 
 As admin user:
 ```
 -- Query the index table of documents:
-SELECT * FROM document_index;
+SELECT document_id, inserted_utc_ts, document_type_id, external_ref, is_valid_json, CAST(json_document AS VARCHAR(85)) AS json_document FROM json_document;
 
-DOCUMENT_ID          PARTITION_NUM DOCUMENT_TYPE_ID INSERTED_UTC_TS     DELETED_UTC_TS      IS_VALID_JSON EXTERNAL_REF                   EXTERNAL_REF_TYPE_ID
--------------------- ------------- ---------------- ------------------- ------------------- ------------- ------------------------------ --------------------
-                   1             2                1 2026-11-16-18.38.58 2026-11-16-18.50.47             1 2026v1_ACME                                       1
-                   2             3                1 2026-11-16-18.39.05 -                               1 2025v1_CleanFresh                                 1
-                   3             4                1 2026-11-16-19.02.30 -                               1 2025v1_CleanFresh                                 1
-                   4             5                1 2026-11-16-19.12.50 -                               0 myBadJson                                         1
+DOCUMENT_ID          INSERTED_UTC_TS     DOCUMENT_TYPE_ID EXTERNAL_REF                   IS_VALID_JSON JSON_DOCUMENT                                                                        
+-------------------- ------------------- ---------------- ------------------------------ ------------- -------------------------------------------------------------------------------------
+                   2 2026-11-21-21.36.59                1 2025v1_CleanFresh                          1 {"name" : "Clean & Fresh Grocers", "sector" : "Supermarket", "account_num" : 8213}   
+                   3 2026-11-21-22.01.02                1 2025v1_CleanFresh                          1 {"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}           
+                   4 2026-11-21-22.31.25                1 myBadJson                                  0 {"name" : "Bad Boyz Inc", "sector" : bogus}                                          
 
-  4 record(s) selected.
+  3 record(s) selected.
+```
+
+## Check audit log
+
+```
+SELECT
+  log_id, log_utc_ts, CAST(user_name AS VARCHAR(20)) AS user_name, action, document_id, document_type_id, tag_id, index_id
+FROM
+  audit_log
+ORDER BY
+  log_id;
+
+LOG_ID               LOG_UTC_TS          USER_NAME            ACTION                         DOCUMENT_ID          DOCUMENT_TYPE_ID TAG_ID INDEX_ID
+-------------------- ------------------- -------------------- ------------------------------ -------------------- ---------------- ------ --------
+                   1 2026-11-21-21.36.33 JEREMY               ADD_DOCUMENT_TYPE                                 -                1      -        -
+                   2 2026-11-21-21.36.44 JEREMY               ADD_DOCUMENT                                      1                1      -        -
+                   3 2026-11-21-21.36.59 JEREMY               ADD_DOCUMENT                                      2                1      -        -
+                   4 2026-11-21-21.37.29 JEREMY               REMOVE_DOCUMENT                                   1                1      -        -
+                   5 2026-11-21-22.00.49 JEREMY               ALLOW_DUPLICATE_REF                               -                1      -        -
+                   6 2026-11-21-22.01.02 JEREMY               ADD_DOCUMENT                                      3                1      -        -
+                   7 2026-11-21-22.31.12 JEREMY               ALLOW_INVALID_JSON                                -                -      -        -
+                   8 2026-11-21-22.31.25 JEREMY               ADD_DOCUMENT                                      4                1      -        -
+
+  8 record(s) selected.
 ```
