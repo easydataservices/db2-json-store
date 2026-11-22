@@ -23,8 +23,8 @@ PUBLISH PROCEDURE add_document_type
 ALTER MODULE admin
 PUBLISH PROCEDURE add_json_index
 (
-  p_index_name VARCHAR(30),
   p_document_type_id SMALLINT,
+  p_index_name VARCHAR(30),
   p_json_path VARCHAR(1000),
   p_value_data_type VARCHAR(20),
   OUT p_index_id SMALLINT
@@ -34,5 +34,6 @@ PUBLISH PROCEDURE add_json_index
 ALTER MODULE admin
 PUBLISH PROCEDURE remove_json_index
 (
+  p_document_type_id SMALLINT,
   p_index_name VARCHAR(30)
 );

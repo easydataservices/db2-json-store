@@ -13,6 +13,6 @@ BEGIN ATOMIC
   VALUES
     (p_document_type_id, p_document_type_name, p_view_document_role, p_add_document_role, p_remove_document_role);
 
-  -- Add audit entry.
+  -- Add audit entry
   CALL private.log_action('ADD_DOCUMENT_TYPE', NULL, p_document_type_id, NULL, NULL);
 END@

@@ -13,7 +13,7 @@ BEGIN
   BEGIN ATOMIC
     UPDATE store_control SET is_invalid_json_blocked = p_is_blocked;
   
-    -- Add audit entry.
+    -- Add audit entry
     IF p_is_blocked THEN
       CALL private.log_action('BLOCK_INVALID_JSON', NULL, NULL, NULL, NULL);
     ELSE

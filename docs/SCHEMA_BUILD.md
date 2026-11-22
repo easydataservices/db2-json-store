@@ -32,6 +32,7 @@ db2 -tf ./schema_DOCSTORE/view_JSON_DOCUMENT.sql
 db2 -tf ./schema_DOCSTORE/module_PRIVATE.sql
 db2 -tf ./schema_DOCSTORE/module_DOCUSER.sql
 db2 -tf ./schema_DOCSTORE/module_ADMIN.sql
+db2 -tf ./schema_DOCSTORE/module_INFO.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_GET_PARTITION_NUM.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_INVALID_JSON_BLOCKED.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_JSON_DOCUMENT.sql
@@ -43,9 +44,12 @@ db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/function_IS_VIEWER.sql
 db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/procedure_ADD_JSON_DOCUMENT.sql
 db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/procedure_REMOVE_JSON_DOCUMENT.sql
 db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/function_GET_JSON_DOCUMENT.sql
+db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/function_GET_ALL_JSON_DOCUMENTS.sql
 db2 -td@ -f ./schema_DOCSTORE/module_ADMIN/procedure_ADD_DOCUMENT_TYPE.sql
 db2 -td@ -f ./schema_DOCSTORE/module_ADMIN/procedure_SET_INVALID_JSON_BLOCKED.sql
 db2 -td@ -f ./schema_DOCSTORE/module_ADMIN/procedure_SET_DUPLICATE_EXTERNAL_REF_BLOCKED.sql
+db2 -td@ -f ./schema_DOCSTORE/module_INFO/function_DOCUMENT_TYPE_ID.sql
+db2 -td@ -f ./schema_DOCSTORE/module_INFO/function_DOCUMENT_TYPE_NAME.sql
 ```
 
 ## Indexing components
@@ -60,6 +64,7 @@ db2 -tf ./schema_DOCSTORE/table_JINDHI.sql
 db2 -tf ./schema_DOCSTORE/module_INDEX.sql
 db2 -td@ -f ./schema_DOCSTORE/module_INDEX/procedure_UPDATE_METADATA.sql
 db2 -td@ -f ./schema_DOCSTORE/module_INDEX/procedure_BUILD_INDEX.sql
+db2 -td@ -f ./schema_DOCSTORE/module_INDEX/procedure_PURGE_INDEX.sql
 db2 -td@ -f ./schema_DOCSTORE/module_ADMIN/procedure_ADD_JSON_INDEX.sql
 db2 -td@ -f ./schema_DOCSTORE/module_ADMIN/procedure_REMOVE_JSON_INDEX.sql
 db2 -td@ -f ./schema_DOCSTORE/module_DOCUSER/function_USABLE_INDEX_ID.sql
@@ -78,4 +83,5 @@ db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_ADD_INDEX_BIGINT_ENTRY.sq
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_ADD_INDEX_DOUBLE_ENTRY.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_ADD_INDEX_VARCHAR_ENTRY.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_ADD_INDEX_ENTRY.sql
+db2 -td@ -f ./schema_DOCSTORE/module_INFO/function_GET_INDEXES.sql
 ```

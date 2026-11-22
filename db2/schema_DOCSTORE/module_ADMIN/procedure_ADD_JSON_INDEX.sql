@@ -1,8 +1,8 @@
 ALTER MODULE admin
 ADD PROCEDURE add_json_index
 (
-  p_index_name VARCHAR(30),
   p_document_type_id SMALLINT,
+  p_index_name VARCHAR(30),
   p_json_path VARCHAR(1000),
   p_value_data_type VARCHAR(20),
   OUT p_index_id SMALLINT
@@ -29,7 +29,7 @@ BEGIN
     VALUES
       (p_index_id, p_index_name, p_document_type_id, private.tidy_json_path(p_json_path), p_value_data_type, v_utc_ts);
 
-    -- Add audit entry.
+    -- Add audit entry
     CALL private.log_action('ADD_INDEX', NULL, p_document_type_id, NULL, p_index_id);
   END;
 END@

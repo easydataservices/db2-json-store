@@ -18,7 +18,7 @@ BEGIN
     WHERE
       document_type_id = p_document_type_id;
   
-    -- Add audit entry.
+    -- Add audit entry
     IF p_is_blocked THEN
       CALL private.log_action('BLOCK_DUPLICATE_REF', NULL, p_document_type_id, NULL, NULL);
     ELSE

@@ -3,7 +3,6 @@ ADD PROCEDURE build_index(p_document_type_id SMALLINT, p_index_name VARCHAR(30))
 BEGIN
   DECLARE v_utc_ts TIMESTAMP(0);
   DECLARE v_index_id SMALLINT;
-  DECLARE v_json_path VARCHAR(1000);
   DECLARE v_is_build_pending BOOLEAN;
   DECLARE v_control control_row;
   DECLARE v_history history_row;
@@ -14,10 +13,10 @@ BEGIN
   SET v_utc_ts = CURRENT_TIMESTAMP - CURRENT_TIMEZONE;
 
   -- Retrieve index details
-  SET (v_index_id, v_json_path, v_is_build_pending) =
+  SET (v_index_id, v_is_build_pending) =
     (
       SELECT
-        index_id, json_path, is_build_pending
+        index_id, is_build_pending
       FROM
         json_index
       WHERE
@@ -37,7 +36,7 @@ BEGIN
   SET (v_history.row_count, v_history.is_complete) = (0, FALSE);
   CALL update_metadata(v_index_id, v_utc_ts, 'BUILD', v_history, v_control);
 
-  -- Insert document index value (if missing)
+  -- Insert document index values (if missing)
   build:
   FOR r AS c1 CURSOR WITH HOLD FOR
     SELECT

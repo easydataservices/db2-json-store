@@ -23,14 +23,9 @@ BEGIN
 
   -- Perform updates
   BEGIN ATOMIC
-    UPDATE json_index
-    SET
-      is_build_pending = FALSE,
-      is_delete_pending = TRUE
-    WHERE
-      document_type_id = p_document_type_id AND index_id = v_index_id;
-      
-    -- Add audit entry.
+    UPDATE json_index SET is_delete_pending = TRUE WHERE index_id = v_index_id;
+
+    -- Add audit entry
     CALL private.log_action('REMOVE_INDEX', NULL, p_document_type_id, NULL, v_index_id);
   END;
 END@
