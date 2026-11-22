@@ -1,4 +1,5 @@
--- DOCUMENT_INDEX table
+-- Table DOCUMENT_INDEX
+
 CREATE TABLE docind
 (
   document_id BIGINT NOT NULL,
@@ -8,7 +9,7 @@ CREATE TABLE docind
   deleted_utc_ts TIMESTAMP(0),
   is_valid_json BOOLEAN NOT NULL,
   external_ref VARCHAR(30),
-  external_ref_type_id SMALLINT NOT NULL
+  external_ref_type_id SMALLINT
     GENERATED ALWAYS AS (CASE WHEN external_ref IS NULL THEN NULL ELSE document_type_id END)
 )
   ORGANIZE BY ROW

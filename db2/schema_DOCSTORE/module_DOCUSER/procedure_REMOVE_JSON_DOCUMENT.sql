@@ -26,7 +26,7 @@ BEGIN
     WHERE
       document_id = p_document_id;
     
-    -- Add audit entry.
+    -- Add audit entry
     CALL private.log_action('REMOVE_DOCUMENT', p_document_id, v_document_type_id, NULL, NULL);
   END;
 END@

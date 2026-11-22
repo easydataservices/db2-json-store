@@ -59,8 +59,15 @@ BEGIN
     INSERT INTO document_json(document_id, partition_num, json_document)
     VALUES
       (p_document_id, v_partition_num, p_json_document);
+
+    -- Build all indexes
+    FOR r AS
+      SELECT index_id FROM json_index WHERE document_type_id = p_document_type_id AND NOT is_delete_pending WITH CS
+    DO
+      CALL private.add_index_entry(p_document_id, r.index_id, p_json_document);
+    END FOR;
     
-    -- Add audit entry.
+    -- Add audit entry
     CALL private.log_action('ADD_DOCUMENT', p_document_id, p_document_type_id, NULL, NULL);
   END;
 END@
