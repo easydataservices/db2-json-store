@@ -48,7 +48,7 @@ This section shows a few different scenarios and features.
 As user JEREMY:
 ```
 -- Add a document
-CALL docuser.add_json_document(NULL, 1, '2026v1_ACME', null, '{"name" : "ACME Corp", "sector" : "Conglomerate", "account_num" : 1234}');
+CALL jdoc.add_document(NULL, 1, '2026v1_ACME', null, '{"name" : "ACME Corp", "sector" : "Conglomerate", "account_num" : 1234}');
 
   Value of output parameters
   --------------------------
@@ -58,7 +58,7 @@ CALL docuser.add_json_document(NULL, 1, '2026v1_ACME', null, '{"name" : "ACME Co
   Return Status = 0
 
 -- Add another document
-CALL docuser.add_json_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "Clean & Fresh Grocers", "sector" : "Supermarket", "account_num" : 8213}');
+CALL jdoc.add_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "Clean & Fresh Grocers", "sector" : "Supermarket", "account_num" : 8213}');
 
   Value of output parameters
   --------------------------
@@ -75,16 +75,16 @@ SELECT
   external_ref,
   cast(json_document AS VARCHAR(85)) AS json_document
 FROM
-  TABLE(docuser.get_json_document(1));
+  TABLE(jdoc.get_document(1));
 
 DOCUMENT_ID          INSERTED_UTC_TS     DOCUMENT_TYPE_NAME             EXTERNAL_REF                   JSON_DOCUMENT                                                                        
 -------------------- ------------------- ------------------------------ ------------------------------ -------------------------------------------------------------------------------------
-                   1 2026-11-22-10.59.08 Organisation                   2026v1_ACME                    {"name" : "ACME Corp", "sector" : "Conglomerate", "account_num" : 1234}              
+                   1 2026-11-27-05.42.28 Organisation                   2026v1_ACME                    {"name" : "ACME Corp", "sector" : "Conglomerate", "account_num" : 1234}              
 
-  1 record(s) selected.
+  1 record(s) selected
 
 -- Remove a document
-CALL docuser.remove_json_document(1);
+CALL jdoc.remove_document(1);
 
   Return Status = 0
 
@@ -96,11 +96,11 @@ SELECT
   external_ref,
   cast(json_document AS VARCHAR(85)) AS json_document
 FROM
-  TABLE(docuser.get_json_document(2));
+  TABLE(jdoc.get_document(2));
 
 DOCUMENT_ID          INSERTED_UTC_TS     DOCUMENT_TYPE_NAME             EXTERNAL_REF                   JSON_DOCUMENT                                                                        
 -------------------- ------------------- ------------------------------ ------------------------------ -------------------------------------------------------------------------------------
-                   2 2026-11-22-10.59.18 Organisation                   2025v1_CleanFresh              {"name" : "Clean & Fresh Grocers", "sector" : "Supermarket", "account_num" : 8213}   
+                   2 2026-11-27-05.42.45 Organisation                   2025v1_CleanFresh              {"name" : "Clean & Fresh Grocers", "sector" : "Supermarket", "account_num" : 8213}   
 
   1 record(s) selected.
 
@@ -112,7 +112,7 @@ SELECT
   external_ref,
   cast(json_document AS VARCHAR(85)) AS json_document
 FROM
-  TABLE(docuser.get_json_document(1));
+  TABLE(jdoc.get_document(1));
 
 DOCUMENT_ID          INSERTED_UTC_TS     DOCUMENT_TYPE_NAME             EXTERNAL_REF                   JSON_DOCUMENT                                                                        
 -------------------- ------------------- ------------------------------ ------------------------------ -------------------------------------------------------------------------------------
@@ -120,7 +120,7 @@ DOCUMENT_ID          INSERTED_UTC_TS     DOCUMENT_TYPE_NAME             EXTERNAL
   0 record(s) selected.
 
 -- Attempt to add an updated document for organisation name change, using duplicate reference 
-CALL docuser.add_json_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}');
+CALL jdoc.add_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}');
 SQL0438N  Application raised error or warning with diagnostic text: 
 "Disallowed duplicate EXTERNAL_REF".  SQLSTATE=DS301
 ```
@@ -137,7 +137,7 @@ CALL admin.set_duplicate_external_ref_blocked(1, FALSE);
 As user JEREMY:
 ```
 -- Attempt to add an updated document for organisation name change, using duplicate reference 
-CALL docuser.add_json_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}');
+CALL jdoc.add_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}');
 
   Value of output parameters
   --------------------------
@@ -147,7 +147,7 @@ CALL docuser.add_json_document(NULL, 1, '2025v1_CleanFresh', null, '{"name" : "C
   Return Status = 0
 
 -- Attempt to add a document with incorrect JSON
-CALL docuser.add_json_document(NULL, 1, 'myBadJson', null, '{"name" : "Bad Boyz Inc", "sector" : bogus}');
+CALL jdoc.add_document(NULL, 1, 'myBadJson', null, '{"name" : "Bad Boyz Inc", "sector" : bogus}');
 SQL0438N  Application raised error or warning with diagnostic text: "Invalid 
 JSON document".  SQLSTATE=DS201
 ```
@@ -164,7 +164,7 @@ DB20000I  The SQL command completed successfully.
 As user JEREMY:
 ```
 -- Attempt to add a document with incorrect JSON
-CALL docuser.add_json_document(NULL, 1, 'myBadJson', null, '{"name" : "Bad Boyz Inc", "sector" : bogus}');
+CALL jdoc.add_document(NULL, 1, 'myBadJson', null, '{"name" : "Bad Boyz Inc", "sector" : bogus}');
 
   Value of output parameters
   --------------------------
@@ -177,13 +177,13 @@ CALL docuser.add_json_document(NULL, 1, 'myBadJson', null, '{"name" : "Bad Boyz 
 As admin user:
 ```
 -- Query the index table of documents:
-SELECT document_id, inserted_utc_ts, document_type_name, external_ref, is_valid_json, CAST(json_document AS VARCHAR(85)) AS json_document FROM TABLE(docuser.get_all_json_documents(1));
+SELECT document_id, inserted_utc_ts, document_type_name, external_ref, is_valid_json, CAST(json_document AS VARCHAR(85)) AS json_document FROM TABLE(jdoc.get_all_documents(1));
 
 DOCUMENT_ID          INSERTED_UTC_TS     DOCUMENT_TYPE_NAME             EXTERNAL_REF                   IS_VALID_JSON JSON_DOCUMENT                                                                        
 -------------------- ------------------- ------------------------------ ------------------------------ ------------- -------------------------------------------------------------------------------------
-                   2 2026-11-22-10.59.18 Organisation                   2025v1_CleanFresh                          1 {"name" : "Clean & Fresh Grocers", "sector" : "Supermarket", "account_num" : 8213}   
-                   3 2026-11-22-11.00.26 Organisation                   2025v1_CleanFresh                          1 {"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}           
-                   4 2026-11-22-11.01.15 Organisation                   myBadJson                                  0 {"name" : "Bad Boyz Inc", "sector" : bogus}                                          
+                   2 2026-11-27-05.42.45 Organisation                   2025v1_CleanFresh                          1 {"name" : "Clean & Fresh Grocers", "sector" : "Supermarket", "account_num" : 8213}   
+                   3 2026-11-27-05.45.21 Organisation                   2025v1_CleanFresh                          1 {"name" : "Clean & Fresh", "sector" : "Supermarket", "account_num" : 8213}           
+                   4 2026-11-27-05.45.49 Organisation                   myBadJson                                  0 {"name" : "Bad Boyz Inc", "sector" : bogus}                                          
 
   3 record(s) selected.
 ```
@@ -200,14 +200,14 @@ ORDER BY
 
 LOG_ID               LOG_UTC_TS          USER_NAME            ACTION                         DOCUMENT_ID          DOCUMENT_TYPE_ID TAG_ID INDEX_ID
 -------------------- ------------------- -------------------- ------------------------------ -------------------- ---------------- ------ --------
-                   1 2026-11-22-10.58.57 JEREMY               ADD_DOCUMENT_TYPE                                 -                1      -        -
-                   2 2026-11-22-10.59.08 JEREMY               ADD_DOCUMENT                                      1                1      -        -
-                   3 2026-11-22-10.59.18 JEREMY               ADD_DOCUMENT                                      2                1      -        -
-                   4 2026-11-22-10.59.39 JEREMY               REMOVE_DOCUMENT                                   1                1      -        -
-                   5 2026-11-22-11.00.17 JEREMY               ALLOW_DUPLICATE_REF                               -                1      -        -
-                   6 2026-11-22-11.00.26 JEREMY               ADD_DOCUMENT                                      3                1      -        -
-                   7 2026-11-22-11.00.59 JEREMY               ALLOW_INVALID_JSON                                -                -      -        -
-                   8 2026-11-22-11.01.15 JEREMY               ADD_DOCUMENT                                      4                1      -        -
+                   1 2026-11-27-05.41.39 JEREMY               ADD_DOCUMENT_TYPE                                 -                1      -        -
+                   2 2026-11-27-05.42.28 JEREMY               ADD_DOCUMENT                                      1                1      -        -
+                   3 2026-11-27-05.42.45 JEREMY               ADD_DOCUMENT                                      2                1      -        -
+                   4 2026-11-27-05.43.51 JEREMY               REMOVE_DOCUMENT                                   1                1      -        -
+                   5 2026-11-27-05.45.10 JEREMY               ALLOW_DUPLICATE_REF                               -                1      -        -
+                   6 2026-11-27-05.45.21 JEREMY               ADD_DOCUMENT                                      3                1      -        -
+                   7 2026-11-27-05.45.39 JEREMY               ALLOW_INVALID_JSON                                -                -      -        -
+                   8 2026-11-27-05.45.49 JEREMY               ADD_DOCUMENT                                      4                1      -        -
 
   8 record(s) selected.
 ```

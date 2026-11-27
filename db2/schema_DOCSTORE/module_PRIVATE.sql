@@ -34,3 +34,15 @@ PUBLISH PROCEDURE log_action
 -- Add index entry for specified document and index
 ALTER MODULE private
 PUBLISH PROCEDURE add_index_entry(p_document_id BIGINT, p_index_id SMALLINT, p_json_document CLOB(2M));
+
+-- Validate whether user can add documents of the specified document type
+ALTER MODULE private
+PUBLISH FUNCTION is_adder(p_document_type_id SMALLINT) RETURNS BOOLEAN;
+
+-- Validate whether user can remove documents of the specified document type
+ALTER MODULE private
+PUBLISH FUNCTION is_remover(p_document_type_id SMALLINT) RETURNS BOOLEAN;
+
+-- Validate whether user can view documents of the specified document type
+ALTER MODULE private
+PUBLISH FUNCTION is_viewer(p_document_type_id SMALLINT) RETURNS BOOLEAN;
