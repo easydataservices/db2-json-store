@@ -1,6 +1,6 @@
 # db2-json-store simple demo with SQL API
 
-This page shows some simple usage examples using the SQL API.
+This page shows some simple usage examples using the SQL API. For further details of supported procedures and functions see [module_JDOC.sql](../db2/schema_DOCSTORE/module_JDOC.sql) and [module_INFO.sql](../db2/schema_DOCSTORE/module_INFO.sql).
 
 See also:
   * [README.md](../README.md)

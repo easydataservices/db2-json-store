@@ -1,6 +1,6 @@
 # db2-json-store JSON indexing with SQL API
 
-This page demonstrates JSON indexing features using the SQL API.
+This page demonstrates JSON indexing features using the SQL API. For a full list of supported search functions see [module_JINDEX.sql](../db2/schema_DOCSTORE/module_JINDEX.sql).
 
 See also:
   * [README.md](../README.md)

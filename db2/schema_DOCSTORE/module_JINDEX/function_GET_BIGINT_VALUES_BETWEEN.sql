@@ -13,7 +13,7 @@ BEGIN
   DECLARE v_index_id SMALLINT;
 
   -- Check authorisation
-  SET v_is_authorised = is_viewer(p_document_type_id);
+  SET v_is_authorised = private.is_viewer(p_document_type_id);
 
   -- Validate JSON path
   IF NOT private.is_json_path(p_json_path) THEN
