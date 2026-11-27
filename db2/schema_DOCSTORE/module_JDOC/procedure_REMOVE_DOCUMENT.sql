@@ -1,5 +1,5 @@
-ALTER MODULE docuser
-ADD PROCEDURE remove_json_document(p_document_id BIGINT)
+ALTER MODULE jdoc
+ADD PROCEDURE remove_document(p_document_id BIGINT)
 BEGIN
   DECLARE v_document_type_id SMALLINT;
   DECLARE v_check BOOLEAN;
@@ -10,7 +10,7 @@ BEGIN
       SELECT document_type_id FROM document_index WHERE document_id = p_document_id
       WITH RS USE AND KEEP UPDATE LOCKS
     );
-  SET v_check = is_remover(v_document_type_id);
+  SET v_check = private.is_remover(v_document_type_id);
 
   -- Shortcut exit if document is already removed
   IF v_document_type_id IS NULL THEN
@@ -19,6 +19,13 @@ BEGIN
 
   -- Perform updates
   BEGIN ATOMIC
+    -- Delete all indexes
+    FOR r AS
+      SELECT index_id FROM json_index WHERE document_type_id = v_document_type_id AND NOT is_delete_pending WITH CS
+    DO
+      CALL private.remove_index_entry(p_document_id, r.index_id);
+    END FOR;
+
     -- Logically delete the document
     UPDATE document_index
     SET

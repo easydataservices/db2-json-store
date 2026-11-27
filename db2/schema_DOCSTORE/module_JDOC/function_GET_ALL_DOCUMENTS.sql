@@ -1,5 +1,5 @@
-ALTER MODULE docuser
-ADD FUNCTION get_json_document(p_document_id BIGINT)
+ALTER MODULE jdoc
+ADD FUNCTION get_all_documents(p_document_type_id SMALLINT)
   RETURNS TABLE
   (
     document_id BIGINT,
@@ -24,4 +24,4 @@ RETURN
       ON
         t.document_type_id = d.document_type_id
   WHERE
-    d.document_id = p_document_id AND is_viewer(t.document_type_id)@
+    t.document_type_id = p_document_type_id AND private.is_viewer(t.document_type_id)@

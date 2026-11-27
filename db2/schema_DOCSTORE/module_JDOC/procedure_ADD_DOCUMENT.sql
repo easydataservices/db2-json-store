@@ -1,5 +1,5 @@
-ALTER MODULE docuser
-ADD PROCEDURE add_json_document
+ALTER MODULE jdoc
+ADD PROCEDURE add_document
 (
   INOUT p_document_id BIGINT,
   p_document_type_id SMALLINT,
@@ -14,7 +14,7 @@ BEGIN
   DECLARE v_is_new_external_ref BOOLEAN;
 
   -- Check user is authorised to add document
-  SET v_check = is_adder(p_document_type_id);
+  SET v_check = private.is_adder(p_document_type_id);
 
   -- Validate JSON document
   SET v_is_valid_json = private.is_json_document(p_json_document);
