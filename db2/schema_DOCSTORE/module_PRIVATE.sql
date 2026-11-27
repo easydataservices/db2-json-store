@@ -35,6 +35,10 @@ PUBLISH PROCEDURE log_action
 ALTER MODULE private
 PUBLISH PROCEDURE add_index_entry(p_document_id BIGINT, p_index_id SMALLINT, p_json_document CLOB(2M));
 
+-- Remove index entry for specified document and index
+ALTER MODULE private
+PUBLISH PROCEDURE remove_index_entry(p_document_id BIGINT, p_index_id SMALLINT);
+
 -- Validate whether user can add documents of the specified document type
 ALTER MODULE private
 PUBLISH FUNCTION is_adder(p_document_type_id SMALLINT) RETURNS BOOLEAN;

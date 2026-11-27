@@ -56,6 +56,7 @@ db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_ADD_INDEX_BIGINT_ENTRY.sq
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_ADD_INDEX_DOUBLE_ENTRY.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_ADD_INDEX_VARCHAR_ENTRY.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_ADD_INDEX_ENTRY.sql
+db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_REMOVE_INDEX_ENTRY.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_LOG_ACTION.sql
 
 db2 -tf ./schema_DOCSTORE/module_JDOC.sql

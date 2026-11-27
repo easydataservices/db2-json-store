@@ -23,7 +23,7 @@ BEGIN
     FOR r AS
       SELECT index_id FROM json_index WHERE document_type_id = v_document_type_id AND NOT is_delete_pending WITH CS
     DO
-      -- TBC CALL private.remove_index_entry(p_document_id, r.index_id);
+      CALL private.remove_index_entry(p_document_id, r.index_id);
     END FOR;
 
     -- Logically delete the document

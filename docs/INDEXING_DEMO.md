@@ -21,6 +21,9 @@ DB20000I  The SQL command completed successfully.
 GRANT ROLE add_payment_doc TO USER JEREMY;
 DB20000I  The SQL command completed successfully.
 
+GRANT ROLE remove_payment_doc TO USER JEREMY;
+DB20000I  The SQL command completed successfully.
+
 GRANT ROLE view_payment_doc TO USER JEREMY;
 DB20000I  The SQL command completed successfully.
 ```
