@@ -16,13 +16,9 @@ PUBLISH FUNCTION is_new_external_ref(p_document_type_id SMALLINT, p_external_ref
 ALTER MODULE private
 PUBLISH FUNCTION is_json_document(p_json CLOB(2M)) RETURNS BOOLEAN;
 
--- Standardise a JSON path expression
+-- Return flag indicate whether supplied text is a JSON array
 ALTER MODULE private
-PUBLISH FUNCTION tidy_json_path(p_json_path VARCHAR(1000)) RETURNS VARCHAR(1000);
-
--- Return flag indicate whether supplied JSON path is a valid path expression
-ALTER MODULE private
-PUBLISH FUNCTION is_json_path(p_json_path VARCHAR(1000)) RETURNS BOOLEAN;
+PUBLISH FUNCTION is_json_array(p_json VARCHAR(2000)) RETURNS BOOLEAN;
 
 -- Standardise a JSON path expression
 ALTER MODULE private
@@ -36,7 +32,6 @@ PUBLISH FUNCTION is_json_path(p_json_path VARCHAR(1000)) RETURNS BOOLEAN;
 ALTER MODULE private
 PUBLISH PROCEDURE log_action
 (
-  p_action VARCHAR(30), p_document_id BIGINT, p_document_type_id SMALLINT, p_tag_id SMALLINT, p_index_id SMALLINT
   p_action VARCHAR(30), p_document_id BIGINT, p_document_type_id SMALLINT, p_tag_id SMALLINT, p_index_id SMALLINT
 );
 

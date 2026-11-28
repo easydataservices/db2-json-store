@@ -11,7 +11,7 @@ BEGIN
   -- Look up and lock external reference  
   SET v_is_new_external_ref =
     (
-      SELECT FALSE FROM external_reference WHERE external_ref = p_external_ref AND external_ref_type_id = p_document_type_id
+      SELECT FALSE FROM external_reference WHERE external_ref = p_external_ref AND document_type_id = p_document_type_id
       WITH RR USE AND KEEP UPDATE LOCKS
     );
   SET v_is_new_external_ref = COALESCE(v_is_new_external_ref, TRUE);

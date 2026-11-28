@@ -16,7 +16,8 @@ PUBLISH PROCEDURE add_document_type
   p_document_type_name VARCHAR(30),
   p_view_document_role VARCHAR(30),
   p_add_document_role VARCHAR(30),
-  p_remove_document_role VARCHAR(30)
+  p_remove_document_role VARCHAR(30),
+  p_define_tags_role VARCHAR(30)
 );
 
 -- Add an index

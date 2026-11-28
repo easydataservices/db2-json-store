@@ -36,7 +36,7 @@ DB20000I  The SQL command completed successfully.
 
 As the admin user, add a new Organisation document type:
 ```
-CALL admin.add_document_type(1, 'Organisation', 'VIEW_ORGANISATION_DOC', 'ADD_ORGANISATION_DOC', 'REMOVE_ORGANISATION_DOC');
+CALL admin.add_document_type(1, 'Organisation', 'VIEW_ORGANISATION_DOC', 'ADD_ORGANISATION_DOC', 'REMOVE_ORGANISATION_DOC', 'ADD_ORGANISATION_DOC');
 
   Return Status = 0
 ```

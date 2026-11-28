@@ -32,7 +32,7 @@ DB20000I  The SQL command completed successfully.
 
 As the admin user, add a new Payment document type:
 ```
-CALL admin.add_document_type(2, 'Payment', 'VIEW_PAYMENT_DOC', 'ADD_PAYMENT_DOC', 'REMOVE_PAYMENT_DOC');
+CALL admin.add_document_type(2, 'Payment', 'VIEW_PAYMENT_DOC', 'ADD_PAYMENT_DOC', 'REMOVE_PAYMENT_DOC', 'ADD_PAYMENT_DOC');
 
   Return Status = 0
 ```
@@ -100,11 +100,7 @@ INDEX_ENTRY_COUNT
 
 The index is still shown as build pending, and cannot be used:
 ```
-SELECT
-  index_id, index_name, CAST(json_path AS VARCHAR(30)) AS json_path, value_data_type, inserted_utc_ts, is_build_pending, is_delete_pending
-FROM
-  TABLE(info.get_indexes(2));
-
+c
 INDEX_ID INDEX_NAME                     JSON_PATH                      VALUE_DATA_TYPE      INSERTED_UTC_TS     IS_BUILD_PENDING IS_DELETE_PENDING
 -------- ------------------------------ ------------------------------ -------------------- ------------------- ---------------- -----------------
        1 ACCOUNT_NUM                    $.account_num                  BIGINT               2026-11-27-05.56.02                1                 0

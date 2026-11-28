@@ -1,0 +1,15 @@
+ALTER MODULE private
+ADD FUNCTION is_json_array(p_json VARCHAR(2000)) RETURNS BOOLEAN
+BEGIN
+  -- Handler for invalid JSON
+  DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+    RETURN FALSE;
+
+  -- Check input text is a JSON array
+  IF LTRIM(p_json) NOT LIKE '[%' OR JSON_TO_BSON(p_json) IS NULL THEN
+    SIGNAL SQLSTATE 'DS205' SET MESSAGE_TEXT = 'Invalid JSON array';
+  END IF;
+
+  -- Return
+  RETURN TRUE;
+END@

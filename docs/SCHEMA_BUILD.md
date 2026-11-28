@@ -5,6 +5,7 @@ This page describes how to create all schema objects from the Db2 command line.
 See also:
   * [README.md](../README.md)
 
+
 ## Prerequisites
 
 Connect to database as an appropriate administrative user.
@@ -15,7 +16,9 @@ db2 -tvf ./schema_DOCSTORE/set_env.sql
 db2 -tvf ./schema_DOCSTORE/tablespaces.sql
 ```
 
-## Tables and views
+## Schema build
+
+### Tables and views
 
 These commands all tables, views and sequences:
 ```
@@ -31,6 +34,10 @@ db2 -tf ./schema_DOCSTORE/table_JDBLIV.sql
 db2 -tf ./schema_DOCSTORE/table_JSTRIV.sql
 db2 -tf ./schema_DOCSTORE/table_JINDCO.sql
 db2 -tf ./schema_DOCSTORE/table_JINDHI.sql
+db2 -tf ./schema_DOCSTORE/table_TAGZZZ.sql
+db2 -tf ./schema_DOCSTORE/table_TADOVA.sql
+db2 -tf ./schema_DOCSTORE/table_DOCTAG.sql
+db2 -tf ./schema_DOCSTORE/table_EXRETA.sql
 
 db2 -tf ./schema_DOCSTORE/view_JSON_DOCUMENT.sql
 
@@ -38,7 +45,7 @@ db2 -tf ./schema_DOCSTORE/sequence_DOCUMENT_ID.sql
 db2 -tf ./schema_DOCSTORE/sequence_LOG_ID.sql
 ```
 
-## Core components
+### Core components
 
 The following commands create core modules needed for saving and retrieval JSON documents, also to support other optional functionality:
 ```
@@ -46,6 +53,7 @@ db2 -tf ./schema_DOCSTORE/module_PRIVATE.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_GET_PARTITION_NUM.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_INVALID_JSON_BLOCKED.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_JSON_DOCUMENT.sql
+db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_JSON_ARRAY.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_NEW_EXTERNAL_REF.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_IS_JSON_PATH.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/function_TIDY_JSON_PATH.sql
@@ -60,6 +68,7 @@ db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_REMOVE_INDEX_ENTRY.sql
 db2 -td@ -f ./schema_DOCSTORE/module_PRIVATE/procedure_LOG_ACTION.sql
 
 db2 -tf ./schema_DOCSTORE/module_JDOC.sql
+db2 -td@ -f ./schema_DOCSTORE/module_JDOC/function_GET_TAGS.sql
 db2 -td@ -f ./schema_DOCSTORE/module_JDOC/procedure_ADD_DOCUMENT.sql
 db2 -td@ -f ./schema_DOCSTORE/module_JDOC/procedure_REMOVE_DOCUMENT.sql
 db2 -td@ -f ./schema_DOCSTORE/module_JDOC/function_GET_DOCUMENT.sql
@@ -76,7 +85,7 @@ db2 -td@ -f ./schema_DOCSTORE/module_INFO/function_DOCUMENT_TYPE_NAME.sql
 db2 -td@ -f ./schema_DOCSTORE/module_INFO/function_GET_INDEXES.sql
 ```
 
-## Indexing components
+### Indexing components
 
 Execute these commands to add JSON indexing support.
 ```
@@ -137,4 +146,46 @@ db2 -td@ -f ./schema_DOCSTORE/module_JINDEX/function_GET_STRING_VALUES_LE.sql
 db2 -td@ -f ./schema_DOCSTORE/module_JINDEX/function_GET_STRING_VALUES_LT.sql
 db2 -td@ -f ./schema_DOCSTORE/module_JINDEX/function_GET_STRING_VALUES_BETWEEN.sql
 db2 -td@ -f ./schema_DOCSTORE/module_JINDEX/function_GET_STRING_VALUES_LIKE.sql
+```
+
+## Schema removal
+
+If you want to drop the schema then run the following inside a Db2 shell (``db2 -t``):
+
+```
+ALTER TABLE audlog DROP RESTRICT ON DROP;
+ALTER TABLE stocon DROP RESTRICT ON DROP;
+ALTER TABLE extref DROP RESTRICT ON DROP;
+ALTER TABLE doctyp DROP RESTRICT ON DROP;
+ALTER TABLE docind DROP RESTRICT ON DROP;
+ALTER TABLE dojson DROP RESTRICT ON DROP;
+ALTER TABLE jindex DROP RESTRICT ON DROP;
+ALTER TABLE jbigiv DROP RESTRICT ON DROP;
+ALTER TABLE jdbliv DROP RESTRICT ON DROP;
+ALTER TABLE jstriv DROP RESTRICT ON DROP;
+ALTER TABLE jindco DROP RESTRICT ON DROP;
+ALTER TABLE jindhi DROP RESTRICT ON DROP;
+ALTER TABLE tagzzz DROP RESTRICT ON DROP;
+ALTER TABLE tadova DROP RESTRICT ON DROP;
+ALTER TABLE doctag DROP RESTRICT ON DROP;
+ALTER TABLE exreta DROP RESTRICT ON DROP;
+
+DROP TABLE audlog;
+DROP TABLE stocon;
+DROP TABLE extref;
+DROP TABLE doctyp;
+DROP TABLE docind;
+DROP TABLE dojson;
+DROP TABLE jindex;
+DROP TABLE jbigiv;
+DROP TABLE jdbliv;
+DROP TABLE jstriv;
+DROP TABLE jindco;
+DROP TABLE jindhi;
+DROP TABLE tagzzz;
+DROP TABLE tadova;
+DROP TABLE doctag;
+DROP TABLE exreta;
+
+CALL ADMIN_DROP_SCHEMA('DOCSTORE', NULL, 'TEMP', 'DROP_SCHEMA');
 ```
